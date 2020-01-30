@@ -1,0 +1,12 @@
+{
+  "name": "segment-typescript-definitions",
+  "version": "0.1.0",
+  "description": "Typescript definitions for segment.com",
+  "repository": "christyharagan/segment-typescript-definitions",
+  "author": {
+    "name": "Christy Haragan",
+    "email": "christy.haragan.github@gmail.com",
+    "url": "https://github.com/christyharagan"
+  },
+  "license": "MIT"
+}
