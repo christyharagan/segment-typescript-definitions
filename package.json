@@ -1,7 +1,7 @@
 {
   "name": "segment-typescript-definitions",
-  "version": "0.2.0",
-  "description": "Typescript definitions for segment.com",
+  "version": "0.2.1",
+  "description": "Typescript definitions for Segment.com's spec, analytics.js, and custom sources and destinations",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/christyharagan/segment-typescript-definitions.git"

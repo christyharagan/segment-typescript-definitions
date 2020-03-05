@@ -3,7 +3,7 @@ declare interface SegmentIdentifyProtocol {}
 
 declare type SegmentIdentify = {
   traits: SegmentIdentifyTraits
-  userId: string
+  // userId: string
 }
 declare type SegmentIdentifyEvent = SegmentIdentify & {
   type: 'identify'
@@ -121,7 +121,7 @@ declare type SegmentOptions<T> = T & {
   }
   externalIds?: SegmentExternalIds
   timestamp?: Date
-}
+} & SegmentId
 
 declare type SegmentId = {
   anonymousId: string
@@ -134,7 +134,7 @@ declare type SegmentProcessedEvent<T> = SegmentOptions<T> & {
   receivedAt: Date
   sentAt: Date
   version: number
-} & SegmentId
+}
 
 declare type SegmentSettings = {[s:string]:string}
 
