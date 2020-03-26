@@ -107,6 +107,9 @@ declare type SegmentScreen = {
   name?: string
   properties?: SegmentScreenProperties
 }
+declare type SegmentScreenEvent = SegmentScreen & {
+  type: 'screen'
+}
 
 declare type SegmentScreenProperties = {
   name?: string
