@@ -48,16 +48,26 @@ import 'segment-typescript-definitions/common'
 
 Then depending on which environment you're targeting will depend on what other definition you pull in (see the following sections for more details).
 
-***Important!*** All users must define the types ```SegmentTrackProtocol``` and ```SegmentEvents```. This is used for typing *track* calls. If no defined schema exists, simply setting: 
+***Important!*** All users must define the types ```SegmentTrackProtocol```, ```SegmentTrackProtocolUnion``` and ```SegmentEvents```. This is used for typing *track* calls. If no defined schema exists, simply setting (in some ```.d.ts``` file within the project scope): 
 ```ts 
 declare type SegmentEvents = string
-declare type SegmentTrackProtocol = any
+declare type SegmentTrackProtocol<E extends SegmentEvents> = any
+
+declare type SegmentTrackProtocolUnion = any
 ``` 
-in some ```.d.ts``` file will suffice. Otherwise, ```SegmentEvents``` should be a string union, listing all ```track``` event names, and ```SegmentTrackProtocol``` should be a conditional type mapping each event name to its event properties. An example would be: 
+Otherwise, ```SegmentEvents``` should be a string union, listing all ```track``` event names, and ```SegmentTrackProtocol``` should be a [conditional type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types) mapping each event name to its event properties. Finally ```SegmentTrackProtocolUnion``` should be a [discriminated union](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions). An example would be: 
 
 ```ts
 declare type SegmentEvents = 'Product Viewed' | 'Product Purchased'
 declare type SegmentTrackProtocol<E extends SegmentEvents> = E extends 'Product Viewed' ? ProductViewed : E extends 'Product Purchased' ? ProductPurchased : never
+
+declare type SegmentTrackProtocolUnion = {
+  event: 'Product Viewed',
+  properties: ProductViewed
+} | {
+  event: 'Product Purchased',
+  properties: ProductPurchased
+}
 
 declare type ProductViewed = {
   product_id: number
@@ -69,6 +79,8 @@ declare type ProductPurchased = {
   quantity: number
 }
 ```
+
+The conditional type form solves for when the track event is an output (e.g. via an ```analytics.track``` call), where-as the discriminated unions are for when the track event in an input (e.g. as input to a custom destination function). Sadly, TypeScript does not yet allow us to choose one form for both scenarios.
 
 There are two interface definitions that can be extended to support strong typing of *identify* and *group* calls. These are ```SegmentIdentifyProtocol``` and ```SegmentGroupProtocol```, respectively. Examples would be:
 
@@ -160,6 +172,10 @@ async function onPage(event:SegmentProcessedEvent<SegmentPageEvent>, settings: S
 
 async function onAlias(event:SegmentProcessedEvent<SegmentAliasEvent>, settings: SegmentSettings) {
   //...
+}
+
+async function onScreen(event:SegmentProcessedEvent<SegmentScreenEvent>, settings: SegmentSettings) {
+  
 }
 ```
 

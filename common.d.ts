@@ -73,9 +73,9 @@ declare type SegmentTrackObject<E extends SegmentEvents> = {
   properties: SegmentTrackProtocol<E>
 }
 
-declare type SegmentTrackEvent<E extends SegmentEvents> = {
+declare type SegmentTrackEvent = {
   type: 'track'
-} & SegmentTrackObject<E>
+} & SegmentTrackProtocolUnion
 
 declare type SegmentAlias = {
   previousId: string
