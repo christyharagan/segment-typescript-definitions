@@ -15,6 +15,9 @@ declare const Segment: {
   set(_:SegmentSetObject<SegmentObjectDefinition> & SegmentId): void
   track<E extends SegmentEvents>(_: SegmentOptions<SegmentTrackObject<E>> & SegmentId): void
   group(_: SegmentOptions<SegmentGroup> & SegmentId): void
+  alias(_:SegmentOptions<SegmentAlias> & SegmentId): void
+  screen(_:SegmentOptions<SegmentScreen> & SegmentId): void
+  page(_:SegmentOptions<SegmentPage> & SegmentId): void
 }
 
 declare type SegmentSetObject<P extends object = object> = {
