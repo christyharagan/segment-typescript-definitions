@@ -1,5 +1,5 @@
-declare interface SegmentGroupProtocol {}
-declare interface SegmentIdentifyProtocol {}
+// declare interface SegmentGroupProtocol { }
+// declare interface SegmentIdentifyProtocol { }
 
 declare type SegmentIdentify = {
   traits: SegmentIdentifyTraits
@@ -100,7 +100,7 @@ declare type SegmentPageProperties = {
   title?: string
   url?: string
   keywords?: string[]
-} & {[p:string]:any}
+} & { [p: string]: any }
 
 declare type SegmentScreen = {
   name?: string
@@ -112,17 +112,15 @@ declare type SegmentScreenEvent = SegmentScreen & {
 
 declare type SegmentScreenProperties = {
   name?: string
-} & {[p:string]:any}
+} & { [p: string]: any }
 
 declare type SegmentOptions = {
   context?: SegmentContext
-  integrations?: { // TODO!
-    All: boolean
-    Mixpanel: boolean
-    Salesforce: boolean
-  }
+  integrations?: {
+    All?: boolean
+  } & { [p: string]: boolean } // TODO! This isn't technically correct
   externalIds?: SegmentExternalIds
-  timestamp?: Date
+  timestamp?: string
 } & SegmentId
 
 declare type SegmentId = {
@@ -133,12 +131,12 @@ declare type SegmentId = {
 
 declare type SegmentProcessedEvent = SegmentOptions & {
   messageId: string
-  receivedAt: Date
-  sentAt: Date
+  receivedAt: string
+  sentAt: string
   version: number
 }
 
-declare type SegmentSettings = {[s:string]:string}
+declare type SegmentSettings = { [s: string]: string }
 
 declare type SegmentExternalIds = {
   collection: 'users',

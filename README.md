@@ -48,16 +48,37 @@ import 'segment-typescript-definitions/common'
 
 Then depending on which environment you're targeting will depend on what other definition you pull in (see the following sections for more details).
 
-***Important!*** All users must define the types ```SegmentTrackProtocol```, ```SegmentTrackProtocolUnion``` and ```SegmentEvents```. This is used for typing *track* calls. If no defined schema exists, simply setting (in some ```.d.ts``` file within the project scope): 
+***Important!*** All users must define the types ```SegmentIdentifyProtocol```, ```SegmentGroupProtocol```, ```SegmentTrackProtocol```, ```SegmentTrackProtocolUnion``` and ```SegmentEvents```. This is used for typing *track*, *identify* and *group* calls. If no defined schema exists, simply setting (in some ```.d.ts``` file within the project scope): 
 ```ts 
-declare type SegmentEvents = string
-declare type SegmentTrackProtocol<E extends SegmentEvents> = any
+declare type SegmentIdentifyProtocol = object
+declare type SegmentGroupProtocol = object
 
-declare type SegmentTrackProtocolUnion = any
+declare type SegmentEvents = string
+declare type SegmentTrackProtocol<E extends SegmentEvents> = object
+
+declare type SegmentTrackProtocolUnion = object
 ``` 
-Otherwise, ```SegmentEvents``` should be a string union, listing all ```track``` event names, and ```SegmentTrackProtocol``` should be a [conditional type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types) mapping each event name to its event properties. Finally ```SegmentTrackProtocolUnion``` should be a [discriminated union](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions). An example would be: 
+Otherwise:
+
+ * ```SegmentIdentifyProtocol``` should be an object definition
+ * ```SegmentGroupProtocol``` should be an object definition
+ * ```SegmentEvents``` should be a string union, listing all ```track``` event names
+ * ```SegmentTrackProtocol``` should be a [conditional type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types) mapping each event name to its event properties
+ * ```SegmentTrackProtocolUnion``` should be a [discriminated union](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions).
+ 
+ An example would be: 
 
 ```ts
+declare type SegmentIdentifyProtocol = {
+  email: string
+  name: string
+  consents_to_email_marketing: boolean
+}
+
+declare type SegmentGroupProtocol = {
+  org_name: string
+}
+
 declare type SegmentEvents = 'Product Viewed' | 'Product Purchased'
 declare type SegmentTrackProtocol<E extends SegmentEvents> = E extends 'Product Viewed' ? ProductViewed : E extends 'Product Purchased' ? ProductPurchased : never
 
@@ -82,41 +103,35 @@ declare type ProductPurchased = {
 
 The conditional type form solves for when the track event is an output (e.g. via an ```analytics.track``` call), where-as the discriminated unions are for when the track event in an input (e.g. as input to a custom destination function). Sadly, TypeScript does not yet allow us to choose one form for both scenarios.
 
-There are two interface definitions that can be extended to support strong typing of *identify* and *group* calls. These are ```SegmentIdentifyProtocol``` and ```SegmentGroupProtocol```, respectively. Examples would be:
-
-```ts
-declare interface SegmentIdentifyProtocol {
-  name: string
-  email: string
-}
-declare interface SegmentGroupProtocol {
-  company_name: string
-}
-```
-
-In order to automatically generate ```SegmentTrackProtocol```, ```SegmentIdentifyProtocol```, and ```SegmentGroupProtocol``` from Segment's Protocol tracking plans, consider using [Segment TSD Generator](https://raw.githubusercontent.com/christyharagan/segment-tsd-generator). Note: this just generates typing definitions to make consuming the raw APIs easier. If you want a more full-featured approach, consider using [TypeWriter](https://github.com/segmentio/typewriter).
+In order to automatically generate ```SegmentTrackProtocol```, ```SegmentIdentifyProtocol```, and ```SegmentGroupProtocol``` from Segment's Protocol tracking plans, consider using [Segment TSD Generator](https://www.github.com/christyharagan/segment-tsd-generator). Note: this just generates typing definitions to make consuming the raw APIs easier. If you want a more full-featured approach, consider using [TypeWriter](https://github.com/segmentio/typewriter).
 
 ### Analytics.JS
 
-For general information on using Analytics.JS see the [docs](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/). To consume the definitions, in every TypeScript file in which you make an event call, have the following code:
+For general information on using Analytics.JS see the [docs](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/). To consume the definitions, define a TypeScript definition file within your source directory that looks like:
 
 ```ts
-import 'segment-typescript-definitions/common'
-import 'segment-typescript-definitions/analytics'
+/// <reference path="../node_modules/segment-typescript-definitions/common.d.ts"/>
+/// <reference path="../node_modules/segment-typescript-definitions/analytics.d.ts"/>
 ```
 
 Beyond that, nothing else should change in how you consume the library.
 
 ### Custom Sources
 
+For a full fledged local development of Segment Functions, consider using [Segment Sloth](https://www.github.com/christyharagan/segment-sloth).
+
 For general information on writing a custom source see the [docs](https://segment.com/docs/connections/sources/custom-sources/).
 
-However, in order to use the definitions, you'll need to manually include some extra typing information in your custom source function. As an example:
+In order to use the definitions, you'll need to manually include some extra typing information in your custom source function. First, define a TypeScript definition file in your source directory that looks like:
 
 ```ts
-import 'segment-typescript-definitions/common'
-import 'segment-typescript-definitions/custom-source'
+/// <reference path="../node_modules/segment-typescript-definitions/common.d.ts"/>
+/// <reference path="../node_modules/segment-typescript-definitions/custom-source.d.ts"/>
+```
 
+For your function itself, define a TypeScript file that looks like:
+
+```ts
 declare type SegmentObjectDefinition = {/*...*/} // See "important" note below for details
 
 async function onRequest(request:SegmentSourceRequest, settings:SegmentSettings) {
@@ -146,36 +161,42 @@ If you wish to have full typings for all included dependencies, include the foll
 
 ### Custom Destinations
 
+For a full fledged local development of Segment Functions, consider using [Segment Sloth](https://www.github.com/christyharagan/segment-sloth).
+
 For general information on writing a custom source see the [docs](https://segment.com/docs/connections/destinations/custom-destinations/).
 
-However, in order to use the definitions, you'll need to manually include some extra typing information in your custom source function. As an example:
+However, in order to use the definitions, you'll need to manually include some extra typing information in your custom source function. First, define a TypeScript definition file in your source directory that looks like:
 
 ```ts
-import 'segment-typescript-definitions/common'
-import 'segment-typescript-definitions/custom-destination'
+/// <reference path="../node_modules/segment-typescript-definitions/common.d.ts"/>
+/// <reference path="../node_modules/segment-typescript-definitions/custom-destination.d.ts"/>
+```
 
-async function onTrack(event:SegmentProcessedEvent<SegmentTrackEvent>, settings: SegmentSettings) {
+For your function itself, define a TypeScript file that looks like:
+
+```ts
+async function onTrack(event:SegmentTrackEvent, settings: SegmentSettings) {
   //...
 }
 
-async function onIdentify(event:SegmentProcessedEvent<SegmentIdentifyEvent>, settings: SegmentSettings) {
+async function onIdentify(event:SegmentIdentifyEvent, settings: SegmentSettings) {
   //...
 }
 
-async function onGroup(event:SegmentProcessedEvent<SegmentGroupEvent>, settings: SegmentSettings) {
+async function onGroup(event:SegmentGroupEvent, settings: SegmentSettings) {
   //...
 }
 
-async function onPage(event:SegmentProcessedEvent<SegmentPageEvent>, settings: SegmentSettings) {
+async function onPage(event:SegmentPageEvent, settings: SegmentSettings) {
   //...
 }
 
-async function onAlias(event:SegmentProcessedEvent<SegmentAliasEvent>, settings: SegmentSettings) {
+async function onAlias(event:SegmentAliasEvent, settings: SegmentSettings) {
   //...
 }
 
-async function onScreen(event:SegmentProcessedEvent<SegmentScreenEvent>, settings: SegmentSettings) {
-  
+async function onScreen(event:SegmentScreenEvent, settings: SegmentSettings) {
+  //...
 }
 ```
 
