@@ -7,7 +7,7 @@ declare type SegmentIdentify = {
 }
 declare type SegmentIdentifyEvent = SegmentIdentify & {
   type: 'identify'
-}
+} & SegmentProcessedEvent
 declare type SegmentIdentifyTraits = {
   address?: {
     city?: string
@@ -46,7 +46,7 @@ declare type SegmentGroup = {
 }
 declare type SegmentGroupEvent = SegmentGroup & {
   type: 'group'
-}
+} & SegmentProcessedEvent
 declare type SegmentGroupTraits = {
   address?: {
     city?: string
@@ -75,7 +75,7 @@ declare type SegmentTrackObject<E extends SegmentEvents> = {
 
 declare type SegmentTrackEvent = {
   type: 'track'
-} & SegmentTrackProtocolUnion
+} & SegmentTrackProtocolUnion & SegmentProcessedEvent
 
 declare type SegmentAlias = {
   previousId: string
@@ -83,7 +83,7 @@ declare type SegmentAlias = {
 }
 declare type SegmentAliasEvent = SegmentAlias & {
   type: 'alias'
-}
+} & SegmentProcessedEvent
 
 declare type SegmentPage = {
   name?: string
@@ -91,7 +91,7 @@ declare type SegmentPage = {
 }
 declare type SegmentPageEvent = SegmentPage & {
   type: 'page'
-}
+} & SegmentProcessedEvent
 declare type SegmentPageProperties = {
   name?: string
   path?: string
@@ -103,19 +103,18 @@ declare type SegmentPageProperties = {
 } & {[p:string]:any}
 
 declare type SegmentScreen = {
-  type: 'screen'
   name?: string
   properties?: SegmentScreenProperties
 }
 declare type SegmentScreenEvent = SegmentScreen & {
   type: 'screen'
-}
+} & SegmentProcessedEvent
 
 declare type SegmentScreenProperties = {
   name?: string
 } & {[p:string]:any}
 
-declare type SegmentOptions<T> = T & {
+declare type SegmentOptions = {
   context?: SegmentContext
   integrations?: { // TODO!
     All: boolean
@@ -132,7 +131,7 @@ declare type SegmentId = {
   userId: string
 }
 
-declare type SegmentProcessedEvent<T> = SegmentOptions<T> & {
+declare type SegmentProcessedEvent = SegmentOptions & {
   messageId: string
   receivedAt: Date
   sentAt: Date
