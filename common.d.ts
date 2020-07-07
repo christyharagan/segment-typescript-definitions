@@ -120,7 +120,6 @@ declare type SegmentOptions = {
     All?: boolean
   } & { [p: string]: boolean } // TODO! This isn't technically correct
   externalIds?: SegmentExternalIds
-  timestamp?: string
 } & SegmentId
 
 declare type SegmentId = {
@@ -133,7 +132,8 @@ declare type SegmentProcessedEvent = SegmentOptions & {
   messageId: string
   receivedAt: string
   sentAt: string
-  version: number
+  timestamp: string
+  originalTimestamp: string
 }
 
 declare type SegmentSettings = { [s: string]: string }
