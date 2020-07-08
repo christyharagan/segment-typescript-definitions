@@ -136,7 +136,7 @@ declare type SegmentProcessedEvent = SegmentOptions & {
   originalTimestamp: string
 }
 
-declare type SegmentSettings = { [s: string]: string | boolean | string[] | { [k: string]: string } }
+declare type SegmentSettings = { [s: string]: undefined | string | boolean | string[] | { [k: string]: string } }
 
 declare type SegmentExternalIds = {
   collection: 'users',
