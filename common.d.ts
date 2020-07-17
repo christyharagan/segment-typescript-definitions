@@ -124,7 +124,9 @@ declare type SegmentOptions = {
 
 declare type SegmentId = {
   anonymousId: string
+  userId?: string
 } | {
+  anonymousId?: string
   userId: string
 }
 
