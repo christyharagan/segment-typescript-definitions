@@ -6,6 +6,10 @@ declare type SegmentIdentify = {
   // userId: string
 }
 declare type SegmentIdentifyEvent = SegmentIdentify & {
+  channel?: string
+  projectId?: string
+  version?: number
+  writeKey?: string
   type: 'identify'
 } & SegmentProcessedEvent
 declare type SegmentIdentifyTraits = {
@@ -116,10 +120,7 @@ declare type SegmentScreenProperties = {
 
 declare type SegmentOptions = {
   context?: SegmentContext
-  integrations?: {
-    All?: boolean
-  } & { [p: string]: boolean } // TODO! This isn't technically correct
-  externalIds?: SegmentExternalIds
+  integrations?: { [p: string]: boolean | { all: boolean } } // TODO! This isn't technically correct
 } & SegmentId
 
 declare type SegmentId = {
@@ -133,7 +134,7 @@ declare type SegmentId = {
 declare type SegmentProcessedEvent = SegmentOptions & {
   messageId: string
   receivedAt: string
-  sentAt: string
+  sentAt: string | null
   timestamp: string
   originalTimestamp: string
 }
@@ -148,6 +149,7 @@ declare type SegmentExternalIds = {
 }[]
 
 declare type SegmentContext = {
+  externalIds?: SegmentExternalIds
   active?: boolean
   app?: {
     name: string
@@ -172,10 +174,16 @@ declare type SegmentContext = {
     type: string
     token: string
   }
-  ip: string
-  library: {
+  ip?: string
+  library?: {
     name: string
     version: string
+  }
+  personas?: {
+    computation_class: string
+    computation_key: string
+    namespace: string
+    space_id: string
   }
   locale?: string
   location?: {
