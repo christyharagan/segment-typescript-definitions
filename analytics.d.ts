@@ -7,6 +7,7 @@ declare type AnalyticsJS = {
   track<Event extends SegmentEvents>(event: Event, properties?: SegmentTrackProtocol<Event>, options?: SegmentOptions, callback?: () => void): void
   alias(user_id: string, previous_id?: string, options?: SegmentOptions, callback?: () => void): void
   screen(category: string, name?: string, options?: SegmentOptions, callback?: () => void): void
+  page(category?: string, name?: string, properties?: SegmentPageProperties, options?: SegmentOptions, callback?: () => void): void
 
   ready(callback: () => void): void
 
