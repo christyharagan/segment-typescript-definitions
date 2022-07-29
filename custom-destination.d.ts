@@ -7,3 +7,6 @@ declare class ValidationError{
 declare class EventNotSupported{
   constructor(msg: string)
 }
+declare class RetryError {
+  constructor(msg: string)
+}

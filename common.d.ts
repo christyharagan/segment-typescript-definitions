@@ -182,6 +182,7 @@ declare type SegmentContext = {
   personas?: {
     computation_class: string
     computation_key: string
+    computation_id: string
     namespace: string
     space_id: string
   }
